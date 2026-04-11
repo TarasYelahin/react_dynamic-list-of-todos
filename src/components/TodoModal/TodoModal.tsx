@@ -2,6 +2,7 @@ import React from 'react';
 import { Loader } from '../Loader';
 import { Todo } from '../../types/Todo';
 import { User } from '../../types/User';
+import classNames from 'classnames';
 
 interface Props {
   todo: Todo | null;
@@ -39,12 +40,11 @@ export const TodoModal: React.FC<Props> = ({
             <p data-cy="modal-title">{todo.title}</p>
             <p data-cy="modal-user">
               <strong
-                className={
-                  todo.completed ? 'has-text-success' : 'has-text-danger'
-                }
-              >
-                {todo.completed ? 'Done' : 'Planned'}
-              </strong>
+                className={classNames({
+                  'has-text-success': todo.completed,
+                  'has-text-danger': !todo.completed,
+                })}
+              ></strong>
               {' by '}
               <a href={`mailto:${user?.email}`}>{user?.name}</a>
             </p>

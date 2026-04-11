@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -38,10 +37,8 @@ export const App: React.FC = () => {
     setLoadingTodos(true);
     getTodos()
       .then(data => setTodos(data))
-      .catch(err => {
-        // eslint-disable-next-line no-console
-        console.error(err);
-        setSelectedUser(null);
+      .catch(() => {
+        setTodos([]);
       })
       .finally(() => setLoadingTodos(false));
   }, []);
@@ -51,10 +48,8 @@ export const App: React.FC = () => {
     setLoadingUser(true);
     getUser(todo.userId)
       .then(user => setSelectedUser(user))
-      .catch(err => {
-        // eslint-disable-next-line no-console
-        console.error(err);
-        setSelectedUser(null);
+      .catch(() => {
+        setTodos([]);
       })
       .finally(() => setLoadingUser(false));
   }, []);
@@ -83,7 +78,12 @@ export const App: React.FC = () => {
 
             <div className="block">
               {(loadingTodos || loadingUser) && <Loader />}
-              <TodoList todos={visibleTodos} onShow={showTodo} />
+              <TodoList
+                todos={visibleTodos}
+                onShow={showTodo}
+                onHide={closeModal}
+                selectedTodoId={selectedTodo?.id ?? null}
+              />
             </div>
           </div>
         </div>

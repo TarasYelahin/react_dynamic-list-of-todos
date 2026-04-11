@@ -4,9 +4,16 @@ import { Todo } from '../../types/Todo';
 interface TodoListProps {
   todos: Todo[];
   onShow: (todo: Todo) => void;
+  onHide: () => void;
+  selectedTodoId: number | null;
 }
 
-export const TodoList: React.FC<TodoListProps> = ({ todos, onShow }) => (
+export const TodoList: React.FC<TodoListProps> = ({
+  todos,
+  onShow,
+  onHide,
+  selectedTodoId,
+}) => (
   <table className="table is-narrow is-fullwidth">
     <thead>
       <tr>
@@ -47,16 +54,31 @@ export const TodoList: React.FC<TodoListProps> = ({ todos, onShow }) => (
             <p>{todo.title}</p>
           </td>
           <td className="has-text-right is-vcentered">
-            <button
-              data-cy="selectButton"
-              type="button"
-              className="button"
-              onClick={() => onShow(todo)}
-            >
-              <span className="icon">
-                <i className="far fa-eye" />
-              </span>
-            </button>
+            {todo.id === selectedTodoId ? (
+              <button
+                data-cy="selectButton"
+                type="button"
+                className="button"
+                onClick={onHide}
+                aria-label="hide"
+              >
+                <span className="icon">
+                  <i className="far fa-eye-slash" />
+                </span>
+              </button>
+            ) : (
+              <button
+                data-cy="selectButton"
+                type="button"
+                className="button"
+                onClick={() => onShow(todo)}
+                aria-label="show"
+              >
+                <span className="icon">
+                  <i className="far fa-eye" />
+                </span>
+              </button>
+            )}
           </td>
         </tr>
       ))}
