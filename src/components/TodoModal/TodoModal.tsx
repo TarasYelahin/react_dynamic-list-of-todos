@@ -2,19 +2,19 @@ import React from 'react';
 import { Loader } from '../Loader';
 import { Todo } from '../../types/Todo';
 import { User } from '../../types/User';
-import classNames from 'classnames';
 
 interface Props {
   todo: Todo | null;
   user: User | null;
   loading: boolean;
+  userError?: string | null;
   onClose: () => void;
 }
-
 export const TodoModal: React.FC<Props> = ({
   todo,
   user,
   loading,
+  userError,
   onClose,
 }) => {
   if (!todo) {
@@ -37,16 +37,14 @@ export const TodoModal: React.FC<Props> = ({
             />
           </header>
           <div className="modal-card-body">
+            {userError && (
+              <div className="notification is-danger" data-cy="modal-error">
+                {userError}
+              </div>
+            )}
             <p data-cy="modal-title">{todo.title}</p>
             <p data-cy="modal-user">
-              <strong
-                className={classNames({
-                  'has-text-success': todo.completed,
-                  'has-text-danger': !todo.completed,
-                })}
-              ></strong>
-              {' by '}
-              <a href={`mailto:${user?.email}`}>{user?.name}</a>
+              by <a href={`mailto:${user?.email}`}>{user?.name}</a>
             </p>
           </div>
         </div>

@@ -18,6 +18,14 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loadingUser, setLoadingUser] = useState(false);
   const [filter, setFilter] = useState<'all' | 'completed' | 'active'>('all');
+  const [userError, setUserError] = useState<string | null>(null);
+
+  const closeModal = useCallback(() => {
+    setSelectedTodo(null);
+    setSelectedUser(null);
+    setLoadingUser(false);
+    setUserError(null);
+  }, []);
 
   const visibleTodos = useMemo(() => {
     const byStatus = todos.filter(todo =>
@@ -45,19 +53,16 @@ export const App: React.FC = () => {
 
   const showTodo = useCallback((todo: Todo) => {
     setSelectedTodo(todo);
+    setUserError(null);
     setLoadingUser(true);
+    setSelectedUser(null);
+
     getUser(todo.userId)
       .then(user => setSelectedUser(user))
-      .catch(() => {
-        setTodos([]);
+      .catch(err => {
+        setUserError(err?.message ?? 'Failed to load user');
       })
       .finally(() => setLoadingUser(false));
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setSelectedTodo(null);
-    setSelectedUser(null);
-    setLoadingUser(false);
   }, []);
 
   return (
@@ -93,6 +98,7 @@ export const App: React.FC = () => {
         todo={selectedTodo}
         user={selectedUser}
         loading={loadingUser}
+        userError={userError}
         onClose={closeModal}
       />
     </>
