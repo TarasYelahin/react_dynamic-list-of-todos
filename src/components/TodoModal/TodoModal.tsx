@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Loader } from '../Loader';
 import { Todo } from '../../types/Todo';
-import { getUser } from '../../api';
 import { User } from '../../types/User';
 
 interface Props {
@@ -11,34 +10,12 @@ interface Props {
   onClose: () => void;
 }
 
-export const TodoModal: React.FC<Props> = ({ todo, onClose }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (!todo) {
-      return;
-    }
-
-    let cancelled = false;
-
-    setIsLoading(true);
-    getUser(todo.userId)
-      .then(u => {
-        if (!cancelled) {
-          setUser(u);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [todo]);
+export const TodoModal: React.FC<Props> = ({
+  todo,
+  user,
+  loading,
+  onClose,
+}) => {
   if (!todo) {
     return null;
   }
@@ -46,7 +23,7 @@ export const TodoModal: React.FC<Props> = ({ todo, onClose }) => {
   return (
     <div className="modal is-active" data-cy="modal">
       <div className="modal-background" />
-      {isLoading ? (
+      {loading ? (
         <Loader />
       ) : (
         <div className="modal-card">
